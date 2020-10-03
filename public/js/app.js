@@ -19380,20 +19380,7 @@ $(document).ready(function () {
         },
         success: function success(data) {
           $('.js-created-armies-div').append('<p><strong>Army name: </strong>' + data.army.name + '<strong> Units: </strong>' + data.army.units + '<strong> Strategy:</strong> attack ' + data.army.attack_strategy.name + '</p>');
-          var numberOfGameArmies = document.getElementById('js-number-of-game-armies').value++; // if (checkNumberOfGameArmies(numberOfGameArmies, e)) {
-          //
-          //     let startButtonExists = $('.js-check-start-game-button'.val());
-          //
-          //     if (!startButtonExists) {
-          //
-          //         $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
-          //     }
-          //
-          // }
-          // else {
-          //
-          //     console.log('nije appendovan button za start');
-          // }
+          var numberOfGameArmies = document.getElementById('js-number-of-game-armies').value++;
         }
       });
     } else {
@@ -19465,7 +19452,33 @@ $(document).ready(function () {
     var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
 
     if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
-      console.log('startovala bitka');
+      console.log('startovala bitka'); // let gameId = $('.js-game-id').val();
+
+      var attackingArmyId = $('.js-next-army-to-attack-id').val();
+      $.ajax({
+        url: route('attack.start', attackingArmyId),
+        // ili start attack??
+        type: 'get',
+        success: function success(data) {
+          console.log(data); // let unitsLost = data.unitsLost;
+          // let attackedArmyId = data.attackedArmyI;
+          //
+          // $.ajax({
+          //
+          //     url: route('army.update-units', attackedArmyId),
+          //     type: 'put',
+          //     data: {
+          //         unitsLost: unitsLost,
+          //         attackedArmyId: attackedArmyId
+          //     },
+          //     success: function (data) {
+          //
+          //         console.log(data);
+          //     }
+          //
+          // })
+        }
+      });
     } else {
       alert('You need to have at least 5 armies to be able to start the game');
     }

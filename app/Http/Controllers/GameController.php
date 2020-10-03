@@ -38,7 +38,9 @@ class GameController extends Controller
 
         $attackStrategies = $this->attackStrategyService->all();
 
-        return view('single-game', compact(['game', 'attackStrategies']));
+        $nextArmyToAttack = $game->armiesInOrderForAttack()->first();
+
+        return view('single-game', compact(['game', 'attackStrategies', 'nextArmyToAttack']));
     }
 
     /**

@@ -11,6 +11,8 @@
 
     <input type="hidden" class="js-number-of-game-armies" id="js-number-of-game-armies" value="{{$game->armies->count()}}">
 
+    <input type="hidden" class="js-next-army-to-attack-id" value="{{$nextArmyToAttack->id}}">
+
     <label class="lead" for="army-name">Army name:</label>
     <input type="text" class="form-control js-army-name" id="army-name" placeholder="Add army name" required><br><br>
 

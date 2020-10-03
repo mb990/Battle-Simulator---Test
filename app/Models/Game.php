@@ -23,6 +23,16 @@ class Game extends Model
     }
 
     /**
+     * @return Collection
+     */
+    public function armiesInOrderForAttack(): Collection
+    {
+        return $this->armies()
+            ->orderBy('created_at', 'asc')
+            ->get();
+    }
+
+    /**
      * @param Army $attackingArmy
      * @return Collection
      */
@@ -35,24 +45,26 @@ class Game extends Model
 
     /**
      * @param Army $attackingArmy
-     * @return mixed
+     * @return Army
      */
-    public function weakestArmy(Army $attackingArmy)
+    public function weakestArmy(Army $attackingArmy): Army
     {
         return $this->armies->where('id', '!==', $attackingArmy->id)
             ->where('units', '>', 0)
-            ->min('units');
+            ->SortBy('units')
+            ->first();
     }
 
     /**
      * @param Army $attackingArmy
-     * @return mixed
+     * @return Army
      */
-    public function strongestArmy(Army $attackingArmy)
+    public function strongestArmy(Army $attackingArmy): Army
     {
         return $this->armies->where('id', '!==', $attackingArmy->id)
             ->where('units', '>', 0)
-            ->max('units');
+            ->sortByDesc('units')
+            ->first();
     }
 
     /**
@@ -63,7 +75,7 @@ class Game extends Model
     {
         return $this->armies->where('id', '!==', $attackingArmy->id)
             ->where('units', '>', 0)
-            ->inRandomOrder()
+            ->shuffle()
             ->first();
     }
 }

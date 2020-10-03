@@ -27,22 +27,6 @@ $(document).ready(function () {
 
                     let numberOfGameArmies = document.getElementById('js-number-of-game-armies').value ++;
 
-                    // if (checkNumberOfGameArmies(numberOfGameArmies, e)) {
-                    //
-                    //     let startButtonExists = $('.js-check-start-game-button'.val());
-                    //
-                    //     if (!startButtonExists) {
-                    //
-                    //         $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
-                    //     }
-                    //
-                    // }
-
-                    // else {
-                    //
-                    //     console.log('nije appendovan button za start');
-                    // }
-
                 }
 
             })

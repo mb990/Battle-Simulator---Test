@@ -33,4 +33,16 @@ class ArmyController extends Controller
 
         return response()->json(['army' => $army]);
     }
+
+//    /**
+//     * @param Request $request
+//     * @param int $armyId
+//     * @return \Illuminate\Http\JsonResponse
+//     */
+//    public function updateUnits(Request $request, int $armyId): \Illuminate\Http\JsonResponse
+//    {
+//        $army = $this->armyService->updateUnits($request->unitsLost, $this->armyService->find($armyId));
+//
+//        return response()->json(['army' => $army]);
+//    }
 }

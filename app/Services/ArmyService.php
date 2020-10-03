@@ -55,6 +55,53 @@ class ArmyService
      */
     public function update($request)
     {
-        return $this->army->update($request);
+        return $this->army->update($request->all());
+    }
+
+    /**
+     * @param $unitsLost
+     * @param Army $army
+     */
+    public function updateUnits($newUnitsAmount, Army $army)
+    {
+        return $this->army->updateUnits($newUnitsAmount, $army);
+    }
+
+    /**
+     * @param Army $attackedArmy
+     * @param float $damage
+     * @return int
+     */
+    public function calculateRemainingUnits(Army $attackedArmy, float $damage): int
+    {
+        $lostUnits = $this->calculateLostUnits($damage);
+
+        $remainingUnits = $attackedArmy->units - $lostUnits;
+
+        return $remainingUnits;
+    }
+
+    /**
+     * @param Army $army
+     * @return bool
+     */
+    public function armyHasOneUnit(Army $army): bool
+    {
+        if ($army->units === 1) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param float $damage
+     * @return int
+     */
+    public function calculateLostUnits(float $damage): int
+    {
+        $lostUnits = intval(floor($damage));
+        return $lostUnits;
     }
 }

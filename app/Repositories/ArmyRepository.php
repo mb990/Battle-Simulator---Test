@@ -52,4 +52,16 @@ class ArmyRepository extends BaseRepository
     {
         return $this->model->update($request->all());
     }
+
+    /**
+     * @param $units
+     * @param Army $army
+     * @return Army
+     */
+    public function updateUnits($units, Army $army): Army
+    {
+        $army->update(['units' => $units]);
+
+        return $this->find($army->id);
+    }
 }
