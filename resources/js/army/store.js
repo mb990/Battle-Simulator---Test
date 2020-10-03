@@ -25,15 +25,23 @@ $(document).ready(function () {
 
                     $('.js-created-armies-div').append('<p><strong>Army name: </strong>' + data.army.name + '<strong> Units: </strong>' + data.army.units + '<strong> Strategy:</strong> attack ' + data.army.attack_strategy.name + '</p>');
 
-                    if (checkNumberOfGameArmies(data.army.game, e)) {
+                    let numberOfGameArmies = document.getElementById('js-number-of-game-armies').value ++;
 
-                        $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
-                    }
+                    // if (checkNumberOfGameArmies(numberOfGameArmies, e)) {
+                    //
+                    //     let startButtonExists = $('.js-check-start-game-button'.val());
+                    //
+                    //     if (!startButtonExists) {
+                    //
+                    //         $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
+                    //     }
+                    //
+                    // }
 
-                    else {
-
-                        console.log('nije appendovan button za start');
-                    }
+                    // else {
+                    //
+                    //     console.log('nije appendovan button za start');
+                    // }
 
                 }
 

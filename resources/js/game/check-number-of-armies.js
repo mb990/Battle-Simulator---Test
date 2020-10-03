@@ -1,10 +1,10 @@
 $(document).ready(function () {
 
-    window.checkNumberOfGameArmies = function(game, e) {
+    window.checkNumberOfGameArmies = function(numberOfArmies, e) {
 
         e.preventDefault();
 
-        return game.armies >= 5;
+        return numberOfArmies >= 5;
     }
 
 })

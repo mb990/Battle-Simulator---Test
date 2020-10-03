@@ -2,19 +2,29 @@ $(document).ready(function () {
 
     window.storeGame = function(e) {
 
-        e.preventDefault();
+        let activeLimitBroken = $('.js-active-games-limit').val();
 
-        $.ajax({
+        if (!activeLimitBroken) {
 
-            url: route('game.store'),
-            type: 'post',
-            success: function (data) {
+            e.preventDefault();
 
-                window.location = data.url;
+            $.ajax({
 
-            }
+                url: route('game.store'),
+                type: 'post',
+                success: function (data) {
 
-        })
+                    window.location = data.url;
+
+                }
+
+            })
+        }
+
+        else {
+
+            alert('You have reached the allowed maximum of active games. Please try again later.')
+        }
 
     }
 

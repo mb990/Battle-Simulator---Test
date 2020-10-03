@@ -4,7 +4,12 @@
 
     <h1>Battle screen</h1>
 
+    <h5>Game id: {{$game->id}}</h5>
+    <h5>Game status: @if($game->active) active @else finished @endif</h5>
+
     <input type="hidden" class="js-game-id" value="{{$game->id}}">
+
+    <input type="hidden" class="js-number-of-game-armies" id="js-number-of-game-armies" value="{{$game->armies->count()}}">
 
     <label class="lead" for="army-name">Army name:</label>
     <input type="text" class="form-control js-army-name" id="army-name" placeholder="Add army name" required><br><br>
@@ -43,7 +48,7 @@
 
     <div class="js-start-the-game-div">
 
-
+        <button class="btn btn-info js-start-the-game">Start the battle</button>
 
     </div>
 
@@ -59,6 +64,7 @@
         $(document).ready(function () {
 
             $('.js-create-army').click(storeArmy);
+            $('.js-start-the-game').click(startTheGame);
 
         })
 

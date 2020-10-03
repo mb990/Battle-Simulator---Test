@@ -13,7 +13,7 @@ class Game extends Model
         'active'
     ];
 
-    public function Armies()
+    public function armies()
     {
         return $this->hasMany(Army::class);
     }

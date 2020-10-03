@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Repositories\GameRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class GameService
 {
@@ -43,5 +44,23 @@ class GameService
     public function store($request): \App\Models\Game
     {
         return $this->game->store($request);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function numberOfActiveGames(): Collection
+    {
+        return $this->game->numberOfActiveGames();
+    }
+
+    public function activeGamesLimitReached()
+    {
+        if ($this->numberOfActiveGames()->count() > 4) {
+
+            return true;
+        }
+
+        return false;
     }
 }

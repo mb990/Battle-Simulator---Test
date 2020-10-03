@@ -19349,6 +19349,8 @@ __webpack_require__(/*! ./army/store */ "./resources/js/army/store.js");
 
 __webpack_require__(/*! ./game/check-number-of-armies */ "./resources/js/game/check-number-of-armies.js");
 
+__webpack_require__(/*! ./game/start */ "./resources/js/game/start.js");
+
 /***/ }),
 
 /***/ "./resources/js/army/store.js":
@@ -19378,12 +19380,20 @@ $(document).ready(function () {
         },
         success: function success(data) {
           $('.js-created-armies-div').append('<p><strong>Army name: </strong>' + data.army.name + '<strong> Units: </strong>' + data.army.units + '<strong> Strategy:</strong> attack ' + data.army.attack_strategy.name + '</p>');
-
-          if (checkNumberOfGameArmies(data.army.game, e)) {
-            $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
-          } else {
-            console.log('nije appendovan button za start');
-          }
+          var numberOfGameArmies = document.getElementById('js-number-of-game-armies').value++; // if (checkNumberOfGameArmies(numberOfGameArmies, e)) {
+          //
+          //     let startButtonExists = $('.js-check-start-game-button'.val());
+          //
+          //     if (!startButtonExists) {
+          //
+          //         $('.js-start-the-game-div').append('<button class="btn btn-info">Start the battle</button>');
+          //     }
+          //
+          // }
+          // else {
+          //
+          //     console.log('nije appendovan button za start');
+          // }
         }
       });
     } else {
@@ -19434,9 +19444,31 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ (function(module, exports) {
 
 $(document).ready(function () {
-  window.checkNumberOfGameArmies = function (game, e) {
+  window.checkNumberOfGameArmies = function (numberOfArmies, e) {
     e.preventDefault();
-    return game.armies >= 5;
+    return numberOfArmies >= 5;
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/game/start.js":
+/*!************************************!*\
+  !*** ./resources/js/game/start.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  window.startTheGame = function (e) {
+    e.preventDefault();
+    var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value; // console.log('broj armija trenutno: ' + currentNumberOfArmies);
+
+    if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
+      console.log('startovala bitka');
+    } else {
+      alert('You need to have at least 5 armies to be able to start the game');
+    }
   };
 });
 
@@ -19451,14 +19483,20 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   window.storeGame = function (e) {
-    e.preventDefault();
-    $.ajax({
-      url: route('game.store'),
-      type: 'post',
-      success: function success(data) {
-        window.location = data.url;
-      }
-    });
+    var activeLimitBroken = $('.js-active-games-limit').val();
+
+    if (!activeLimitBroken) {
+      e.preventDefault();
+      $.ajax({
+        url: route('game.store'),
+        type: 'post',
+        success: function success(data) {
+          window.location = data.url;
+        }
+      });
+    } else {
+      alert('You have reached the allowed maximum of active games. Please try again later.');
+    }
   };
 });
 

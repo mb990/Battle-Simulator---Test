@@ -6,6 +6,8 @@
 
             <input type="hidden" class="js-game-id">
 
+            <input type="hidden" class="js-active-games-limit" value="{{$activeGamesLimit}}">
+
             <h3 class="text-muted">Create new game/battle and add at least 5 armies before starting the game.</h3><br>
 
             <button class="btn btn-success js-create-game">Create New Game</button><hr>

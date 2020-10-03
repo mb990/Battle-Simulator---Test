@@ -28,6 +28,8 @@ class PageController extends Controller
     {
         $games = $this->gameService->all();
 
-        return view('home', compact(['games']));
+        $activeGamesLimit = $this->gameService->activeGamesLimitReached();
+
+        return view('home', compact(['games', 'activeGamesLimit']));
     }
 }

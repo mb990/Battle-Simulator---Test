@@ -43,4 +43,13 @@ class GameRepository extends BaseRepository
     {
         return $this->model->create($request->all());
     }
+
+    /**
+     * @return Collection
+     */
+    public function numberOfActiveGames(): Collection
+    {
+        return $this->model->where('active', true)
+            ->get();
+    }
 }
