@@ -6,8 +6,6 @@ $(document).ready(function () {
 
         let currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
 
-        // console.log('broj armija trenutno: ' + currentNumberOfArmies);
-
         if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
 
             console.log('startovala bitka');

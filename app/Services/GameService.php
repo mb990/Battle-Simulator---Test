@@ -47,6 +47,15 @@ class GameService
     }
 
     /**
+     * @param $request
+     * @return mixed
+     */
+    public function update($request)
+    {
+        return $this->game->update($request);
+    }
+
+    /**
      * @return Collection
      */
     public function numberOfActiveGames(): Collection

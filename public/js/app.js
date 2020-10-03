@@ -19462,7 +19462,7 @@ $(document).ready(function () {
 $(document).ready(function () {
   window.startTheGame = function (e) {
     e.preventDefault();
-    var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value; // console.log('broj armija trenutno: ' + currentNumberOfArmies);
+    var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
 
     if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
       console.log('startovala bitka');

@@ -13,6 +13,9 @@ class AttackStrategy extends Model
         'name'
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function Armies()
     {
         return $this->hasMany(Army::class);

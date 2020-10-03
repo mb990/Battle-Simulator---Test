@@ -44,4 +44,13 @@ class BaseRepository extends AbstractRepositoryClass
         return $this->model->create($request->all());
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function update($request)
+    {
+        return $this->model->update($request->all());
+    }
+
 }

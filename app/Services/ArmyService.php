@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Models\Army;
 use App\Repositories\ArmyRepository;
 
 class ArmyService
@@ -46,5 +47,14 @@ class ArmyService
     public function store($request): \App\Models\Army
     {
         return $this->army->store($request);
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function update($request)
+    {
+        return $this->army->update($request);
     }
 }

@@ -15,11 +15,17 @@ class Army extends Model
 
     protected $with = ['attackStrategy', 'game'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function game()
     {
         return $this->belongsTo(Game::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function attackStrategy()
     {
         return $this->belongsTo(AttackStrategy::class);

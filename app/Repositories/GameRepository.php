@@ -52,4 +52,13 @@ class GameRepository extends BaseRepository
         return $this->model->where('active', true)
             ->get();
     }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function update($request)
+    {
+        return $this->model->update($request->all());
+    }
 }
