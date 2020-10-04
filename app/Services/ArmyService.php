@@ -32,10 +32,10 @@ class ArmyService
     }
 
     /**
-     * @param int $id
+     * @param $id
      * @return \App\Models\Army
      */
-    public function find(int $id): \App\Models\Army
+    public function find($id): \App\Models\Army
     {
         return $this->army->find($id);
     }

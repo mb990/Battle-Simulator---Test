@@ -5,13 +5,15 @@
     <h1>Battle screen</h1>
 
     <h5>Game id: {{$game->id}}</h5>
-    <h5>Game status: @if($game->active) active @else finished @endif</h5>
+    <h5>Game status: @if($game->active) active @else not active @endif</h5>
 
     <input type="hidden" class="js-game-id" value="{{$game->id}}">
 
+    <input type="hidden" class="js-is-game-active" value="{{$game->active}}">
+
     <input type="hidden" class="js-number-of-game-armies" id="js-number-of-game-armies" value="{{$game->armies->count()}}">
 
-    <input type="hidden" class="js-next-army-to-attack-id" value="{{$nextArmyToAttack->id}}">
+    <input type="hidden" class="js-next-army-to-attack-id" value="@isset($nextArmyToAttack) {{$nextArmyToAttack->id}} @endisset">
 
     <label class="lead" for="army-name">Army name:</label>
     <input type="text" class="form-control js-army-name" id="army-name" placeholder="Add army name" required><br><br>
@@ -50,11 +52,27 @@
 
     <div class="js-start-the-game-div">
 
-        <button class="btn btn-info js-start-the-game">Start the battle</button>
+        @if(!$game->active)
+
+            <button class="btn btn-info js-start-the-game">Start the battle</button>
+
+            <button class="btn btn-info js-start-autorun-game">Autorun the battle</button>
+
+        @else
+
+            <button class="btn btn-info js-attack-next">Next attack</button>
+
+        @endif
 
     </div>
 
     <h5>You need at least 5 created armies to use this command</h5>
+
+    <div class="js-battle-log">
+
+
+
+    </div>
 
 @endsection
 
@@ -67,6 +85,7 @@
 
             $('.js-create-army').click(storeArmy);
             $('.js-start-the-game').click(startTheGame);
+            $('.js-start-autorun-game').click(); // ovde ce ici autorun battle funkcija
 
         })
 

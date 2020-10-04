@@ -19351,6 +19351,8 @@ __webpack_require__(/*! ./game/check-number-of-armies */ "./resources/js/game/ch
 
 __webpack_require__(/*! ./game/start */ "./resources/js/game/start.js");
 
+__webpack_require__(/*! ./game/run-attack */ "./resources/js/game/run-attack.js");
+
 /***/ }),
 
 /***/ "./resources/js/army/store.js":
@@ -19439,6 +19441,32 @@ $(document).ready(function () {
 
 /***/ }),
 
+/***/ "./resources/js/game/run-attack.js":
+/*!*****************************************!*\
+  !*** ./resources/js/game/run-attack.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  window.runAttack = function (data, e) {
+    e.preventDefault(); // $('.js-start-the-game-div').append('<button class="btn btn-info js-attack-next">Next attack</button>');
+
+    if (!data.data.game_over) {
+      if (data.data.success) {
+        $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + '</strong> army attacked <strong>' + data.data.attackedArmy.name + '</strong> and dealt <strong>' + data.data.damage + '</strong> damage, killing <strong>' + +data.data.lost_units + '</strong> units. Army <strong>' + data.data.attackedArmy.name + '</strong> has <strong>' + data.data.attackedArmy.units + '</strong> units remaining. </p>');
+        console.log(data);
+      } else {
+        $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + ' </strong>unsuccessfully attacked <strong>' + data.data.attackedArmy.name + '</strong>.</p>');
+      }
+    } else {
+      alert('Game is over. Army ' + data.data.victorious_army.name + ' is victorious!');
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/game/start.js":
 /*!************************************!*\
   !*** ./resources/js/game/start.js ***!
@@ -19450,37 +19478,34 @@ $(document).ready(function () {
   window.startTheGame = function (e) {
     e.preventDefault();
     var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
+    var gameIsActive = $('.js-is-game-active').val();
 
-    if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
-      console.log('startovala bitka'); // let gameId = $('.js-game-id').val();
+    if (!gameIsActive) {
+      if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
+        console.log('startovala bitka');
+        var attackingArmyId = $('.js-next-army-to-attack-id').val();
+        $.ajax({
+          url: route('attack.start', attackingArmyId),
+          type: 'get',
+          success: function success(data) {
+            runAttack(data, e);
+          }
+        });
+      } else {
+        alert('You need to have at least 5 armies to be able to start the game');
+      }
+    } else {
+      console.log('startovala bitka');
 
-      var attackingArmyId = $('.js-next-army-to-attack-id').val();
+      var _attackingArmyId = $('.js-next-army-to-attack-id').val();
+
       $.ajax({
-        url: route('attack.start', attackingArmyId),
-        // ili start attack??
+        url: route('attack.start', _attackingArmyId),
         type: 'get',
         success: function success(data) {
-          console.log(data); // let unitsLost = data.unitsLost;
-          // let attackedArmyId = data.attackedArmyI;
-          //
-          // $.ajax({
-          //
-          //     url: route('army.update-units', attackedArmyId),
-          //     type: 'put',
-          //     data: {
-          //         unitsLost: unitsLost,
-          //         attackedArmyId: attackedArmyId
-          //     },
-          //     success: function (data) {
-          //
-          //         console.log(data);
-          //     }
-          //
-          // })
+          runAttack(data, e);
         }
       });
-    } else {
-      alert('You need to have at least 5 armies to be able to start the game');
     }
   };
 });

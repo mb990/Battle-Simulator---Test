@@ -29,10 +29,10 @@ class AttackController extends Controller
     }
 
     /**
-     * @param int $attackingArmyId
+     * @param $attackingArmyId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function start(int $attackingArmyId): \Illuminate\Http\JsonResponse
+    public function start($attackingArmyId): \Illuminate\Http\JsonResponse
     {
         $data = $this->attackService->start($this->armyService->find($attackingArmyId));
 

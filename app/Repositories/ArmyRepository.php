@@ -27,10 +27,10 @@ class ArmyRepository extends BaseRepository
     }
 
     /**
-     * @param int $id
+     * @param $id
      * @return Army
      */
-    public function find(int $id): Army
+    public function find($id): Army
     {
         return $this->model->find($id);
     }

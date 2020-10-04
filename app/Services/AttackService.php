@@ -27,26 +27,42 @@ class AttackService
 
     public function start(Army $attackingArmy)
     {
-        $data = [];
+        if (!$this->battleIsOver($attackingArmy->game->armies)) {
 
-        $attackedArmy = $this->pickAttackedArmy($attackingArmy);
+            $data = [];
 
-        $data['attackedArmy'] = $attackedArmy;
+            $data['attackedArmy'] = $this->pickAttackedArmy($attackingArmy);
 
-        if ($this->isAttackSuccessful($attackingArmy)) {
+            if ($this->isAttackSuccessful($attackingArmy)) {
 
-            $damage = $this->dealDamage($attackingArmy);
+                $data['success'] = true;
 
-            $data['damage'] = $damage;
+                $data['damage'] = $this->dealDamage($attackingArmy);
 
-            $attackedNew = $this->armyService->updateUnits($this->armyService->calculateRemainingUnits($attackedArmy, $damage), $attackedArmy);
+                $this->armyService->updateUnits($this->armyService->calculateRemainingUnits($data['attackedArmy'], $data['damage']), $data['attackedArmy']);
 
-            $data['attackedArmy with new units'] = $attackedNew;
+                $data['lost_units'] = $this->armyService->calculateLostUnits($data['damage']);
+            }
+
+            else {
+
+                $data['success'] = false;
+            }
+
+            $data['attackingArmy'] = $attackingArmy;
+
+            return $data;
         }
 
-        $data['attackingArmy'] = $attackingArmy;
+        return $this->gameOverProtocol($attackingArmy);
+    }
 
-        return $data;
+    public function autorunBattle($armies)
+    {
+        foreach ($armies as $army) {
+
+            $this->start($army);
+        }
     }
 
     /**
@@ -112,7 +128,7 @@ class AttackService
      * @param Army $army
      * @return float
      */
-    public function reloadTime(Army $army): float
+    public function setReloadTime(Army $army): float
     {
         $reloadTime = $army->units * 0.01;
 
@@ -124,7 +140,7 @@ class AttackService
      */
     public function reload(Army $army): void
     {
-        $reloadTime = $this->reloadTime($army);
+        $reloadTime = $this->setReloadTime($army);
 
         usleep($reloadTime * 10 * 1000); // centiseconds to milliseconds to microseconds
     }
@@ -171,5 +187,44 @@ class AttackService
         $damage += $this->damageDealt($attackingArmy);
 
         return $damage;
+    }
+
+    /**
+     * @param $armies
+     * @return bool
+     */
+    public function battleIsOver($armies): bool
+    {
+        $armiesWithUnits = [];
+
+        foreach ($armies as $army) {
+
+            if ($army->units > 0) {
+
+                $armiesWithUnits[] = $army;
+
+                if (count($armiesWithUnits) > 1) {
+
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Army $army
+     * @return array
+     */
+    public function gameOverProtocol(Army $army): array
+    {
+        $data = [];
+
+        $data['game_over'] = true;
+
+        $data['victorious_army'] = $army;
+
+        return $data;
     }
 }

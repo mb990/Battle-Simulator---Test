@@ -32,7 +32,7 @@ class GameRepository extends BaseRepository
      */
     public function find(int $id): Game
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
     /**
