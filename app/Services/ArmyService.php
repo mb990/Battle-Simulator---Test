@@ -68,6 +68,17 @@ class ArmyService
     }
 
     /**
+     * @param $armyId
+     * @throws \Exception
+     */
+    public function delete($armyId)
+    {
+        $army = $this->find($armyId);
+
+        return $this->army->delete($army);
+    }
+
+    /**
      * @param Army $attackedArmy
      * @param float $damage
      * @return int

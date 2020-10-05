@@ -18,7 +18,7 @@
 
                 @forelse($games as $game)
 
-                    <p><a href="{{route('game.show', $game->id)}}">{{$game->id}}</a>@if($game->active) active @else finished @endif</p>
+                    <p><a href="{{route('game.show', $game->id)}}">{{$game->id}}</a>@if($game->active) active @else not active @endif</p>
 
                 @empty
 

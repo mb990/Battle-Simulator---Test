@@ -30,11 +30,4 @@ abstract class AbstractRepositoryClass
      * @return mixed
      */
     abstract public function store($request);
-
-    /**
-     * @param $request
-     * @return mixed
-     */
-    abstract public function update($request);
-
 }

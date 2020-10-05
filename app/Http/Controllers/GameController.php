@@ -55,4 +55,16 @@ class GameController extends Controller
 
         return response()->json(['game' => $game, 'url' => $url]);
     }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $this->gameService->update($request, $id);
+
+        return response()->json(['success' => 'game updated']);
+    }
 }

@@ -27,6 +27,15 @@ class GameRepository extends BaseRepository
     }
 
     /**
+     * @return Collection
+     */
+    public function activeGames(): Collection
+    {
+        return $this->model->where('active', 1)
+            ->get();
+    }
+
+    /**
      * @param int $id
      * @return Game
      */
@@ -57,8 +66,8 @@ class GameRepository extends BaseRepository
      * @param $request
      * @return mixed
      */
-    public function update($request)
+    public function update($request, $game)
     {
-        return $this->model->update($request->all());
+        return $game->update(['active' => $request['active']]);
     }
 }

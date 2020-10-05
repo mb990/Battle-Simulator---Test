@@ -4,6 +4,7 @@
 namespace App\Services;
 
 
+use App\Models\Game;
 use App\Repositories\GameRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -28,6 +29,11 @@ class GameService
         return $this->game->all();
     }
 
+    public function activeGames()
+    {
+        return $this->game->activeGames();
+    }
+
     /**
      * @param int $id
      * @return \App\Models\Game
@@ -50,9 +56,11 @@ class GameService
      * @param $request
      * @return mixed
      */
-    public function update($request)
+    public function update($request, $id)
     {
-        return $this->game->update($request);
+        $game = $this->find($id);
+
+        return $this->game->update($request->all(), $game);
     }
 
     /**
@@ -63,7 +71,10 @@ class GameService
         return $this->game->numberOfActiveGames();
     }
 
-    public function activeGamesLimitReached()
+    /**
+     * @return bool
+     */
+    public function activeGamesLimitReached(): bool
     {
         if ($this->numberOfActiveGames()->count() > 4) {
 

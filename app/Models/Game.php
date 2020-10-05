@@ -28,6 +28,7 @@ class Game extends Model
     public function armiesInOrderForAttack(): Collection
     {
         return $this->armies()
+            ->where('units', '>', 0)
             ->orderBy('created_at', 'asc')
             ->get();
     }

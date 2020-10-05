@@ -11,6 +11,14 @@
 
     <input type="hidden" class="js-is-game-active" value="{{$game->active}}">
 
+    <input type="hidden" class="js-is-game-over" value="0">
+
+    <div class="js-all-game-armies-div">
+
+        <input type="hidden" class="js-all-game-armies" value="{{$game->armiesInOrderForAttack()}}">
+
+    </div>
+
     <input type="hidden" class="js-number-of-game-armies" id="js-number-of-game-armies" value="{{$game->armies->count()}}">
 
     <input type="hidden" class="js-next-army-to-attack-id" value="@isset($nextArmyToAttack) {{$nextArmyToAttack->id}} @endisset">
@@ -40,7 +48,7 @@
 
         <h5>Created armies:</h5><br>
 
-        @forelse($game->armies as $army)
+        @forelse($game->armiesInOrderForAttack() as $army)
 
             <p><strong>Army name:</strong> {{$army->name}} <strong>Units:</strong> {{$army->units}} <strong>Strategy:</strong> attack {{$army->attackstrategy->name}}</p>
 
@@ -54,19 +62,27 @@
 
         @if(!$game->active)
 
-            <button class="btn btn-info js-start-the-game">Start the battle</button>
+            <div class="js-starting-buttons-div">
 
-            <button class="btn btn-info js-start-autorun-game">Autorun the battle</button>
+                <button class="btn btn-info js-start-the-game">Start the battle</button>
+
+                <button class="btn btn-info js-start-autorun-game">Autorun the battle</button>
+
+                <h5>You need at least 5 created armies to use this command</h5>
+
+            </div>
 
         @else
 
-            <button class="btn btn-info js-attack-next">Next attack</button>
+            <div class="js-next-attack-button">
+
+                <button class="btn btn-info js-attack-next">Next attack</button>
+
+            </div>
 
         @endif
 
     </div>
-
-    <h5>You need at least 5 created armies to use this command</h5>
 
     <div class="js-battle-log">
 
@@ -85,7 +101,8 @@
 
             $('.js-create-army').click(storeArmy);
             $('.js-start-the-game').click(startTheGame);
-            $('.js-start-autorun-game').click(); // ovde ce ici autorun battle funkcija
+            $('.js-attack-next').click(startTheGame);
+            $('.js-start-autorun-game').click(autorunGame);
 
         })
 

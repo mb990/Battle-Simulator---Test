@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/game', 'GameController@store')->name('game.store');
+Route::put('/game/{id}', 'GameController@update')->name('game.update');
 Route::post('/army', 'ArmyController@store')->name('army.store');
+Route::delete('/army/{id}', 'ArmyController@destroy')->name('army.delete');
 Route::get('/attack/{armyId}', 'AttackController@start')->name('attack.start');
 //Route::put('/army/{id}', 'ArmyController@updateUnits')->name('army.update-units');

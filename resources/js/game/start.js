@@ -4,29 +4,51 @@ $(document).ready(function () {
 
         e.preventDefault();
 
+        let gameId = $('.js-game-id').val();
+
         let currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
 
         let gameIsActive = $('.js-is-game-active').val();
 
-        if (!gameIsActive) {
+        $('.js-battle-log').empty();
+
+        if (gameIsActive == 0) { // game starting for the first time
 
             if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
 
-                console.log('startovala bitka');
+                let armies = $('.js-all-game-armies').val();
 
-                let attackingArmyId = $('.js-next-army-to-attack-id').val();
+                location.reload();
 
-                $.ajax({
+                jQuery.each(JSON.parse(armies), function (key, army) {
 
-                    url: route('attack.start', attackingArmyId),
-                    type: 'get',
-                    success: function (data) {
+                    if (army.units > 0) {
 
-                        runAttack(data, e);
+                        updateGame(e);
+
+                        $('.js-is-game-active').val(1);
+
+                        console.log('battle started');
+
+                        // setTimeout(function () {
+
+                            $.ajax({
+
+                                url: route('attack.start', army.id),
+                                type: 'get',
+                                success: function (data) {
+
+                                    runAttack(data, e);
+
+                                },
+                                async: false
+
+                            });
+                        // }, 1);
 
                     }
 
-                })
+                });
 
             }
 
@@ -36,26 +58,77 @@ $(document).ready(function () {
             }
         }
 
-        else {
+        else { // game continues
 
-            console.log('startovala bitka');
+            console.log('battle continued');
 
-            let attackingArmyId = $('.js-next-army-to-attack-id').val();
+            let armies = $('.js-all-game-armies').val();
 
-            $.ajax({
+            let gameOver = $('.js-is-game-over').val();
 
-                url: route('attack.start', attackingArmyId),
-                type: 'get',
-                success: function (data) {
+            jQuery.each(JSON.parse(armies), function (key, army) {
 
-                    runAttack(data, e);
+                if (JSON.parse(armies).length < 2) {
+
+                    // console.log('sad je usao u manje od 2 armije');
+
+                    $('.js-is-game-over').val(1);
+
+                    location.reload();
+
+                    alert('Battle is over, ' + army.name + ' wins.');
+
+                    $.ajax({
+
+                        url: route('game.update', gameId),
+                        type: 'put',
+                        data: {
+                            active: 0
+                        },
+                        success: function (data) {
+
+                            // console.log(data.success);
+                        }
+
+                    })
+
+                    return 1;
+                }
+
+                if (army.units > 0 && gameOver != 1) {
+
+                    // setTimeout(function () {
+
+                        $.ajax({
+
+                            url: route('attack.start', army.id),
+                            type: 'get',
+                            success: function (data) {
+
+                                let isOver = runAttack(data, e);
+
+                                if (typeof data.data.armies !== 'undefined') {
+
+                                    $('.js-all-game-armies').val(JSON.stringify(data.data.armies));
+                                }
+
+                                return isOver;
+
+                            },
+                            async: false
+
+                        });
+                    // }, 1);
+
+
 
                 }
 
-            })
+                return 0;
+
+            });
+
         }
-
-
 
     }
 

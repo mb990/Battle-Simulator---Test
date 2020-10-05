@@ -32,7 +32,7 @@ class ArmyRepository extends BaseRepository
      */
     public function find($id): Army
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
     /**
@@ -63,5 +63,14 @@ class ArmyRepository extends BaseRepository
         $army->update(['units' => $units]);
 
         return $this->find($army->id);
+    }
+
+    /**
+     * @param Army $army
+     * @throws \Exception
+     */
+    public function delete(Army $army)
+    {
+        $army->delete();
     }
 }

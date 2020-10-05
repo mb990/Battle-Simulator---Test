@@ -27,7 +27,7 @@ class AttackService
 
     public function start(Army $attackingArmy)
     {
-        if (!$this->battleIsOver($attackingArmy->game->armies)) {
+        if (!$this->battleIsOver($attackingArmy->game->armiesInOrderForAttack())) {
 
             $data = [];
 
@@ -50,6 +50,8 @@ class AttackService
             }
 
             $data['attackingArmy'] = $attackingArmy;
+
+            $data['armies'] = $attackingArmy->game->armiesInOrderForAttack();
 
             return $data;
         }

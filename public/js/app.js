@@ -19347,11 +19347,39 @@ __webpack_require__(/*! ./game/store */ "./resources/js/game/store.js");
 
 __webpack_require__(/*! ./army/store */ "./resources/js/army/store.js");
 
+__webpack_require__(/*! ./army/delete */ "./resources/js/army/delete.js");
+
 __webpack_require__(/*! ./game/check-number-of-armies */ "./resources/js/game/check-number-of-armies.js");
 
 __webpack_require__(/*! ./game/start */ "./resources/js/game/start.js");
 
 __webpack_require__(/*! ./game/run-attack */ "./resources/js/game/run-attack.js");
+
+__webpack_require__(/*! ./game/update */ "./resources/js/game/update.js");
+
+__webpack_require__(/*! ./game/autorun */ "./resources/js/game/autorun.js");
+
+/***/ }),
+
+/***/ "./resources/js/army/delete.js":
+/*!*************************************!*\
+  !*** ./resources/js/army/delete.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  window.deleteArmy = function (armyId, e) {
+    e.preventDefault();
+    $.ajax({
+      url: route('army.delete', armyId),
+      type: 'delete',
+      success: function success(data) {
+        console.log(data.success);
+      }
+    });
+  };
+});
 
 /***/ }),
 
@@ -19381,6 +19409,15 @@ $(document).ready(function () {
           attack_strategy_id: strategyId
         },
         success: function success(data) {
+          var currentGameArmies = JSON.parse($('.js-all-game-armies').val());
+
+          if (data.army.game.active) {
+            currentGameArmies.unshift(data.army);
+          } else {
+            currentGameArmies.push(data.army);
+          }
+
+          $('.js-all-game-armies').val(JSON.stringify(currentGameArmies));
           $('.js-created-armies-div').append('<p><strong>Army name: </strong>' + data.army.name + '<strong> Units: </strong>' + data.army.units + '<strong> Strategy:</strong> attack ' + data.army.attack_strategy.name + '</p>');
           var numberOfGameArmies = document.getElementById('js-number-of-game-armies').value++;
         }
@@ -19425,6 +19462,27 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/game/autorun.js":
+/*!**************************************!*\
+  !*** ./resources/js/game/autorun.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  window.autorunGame = function (e) {
+    e.preventDefault();
+    var gameIsOver = $('.js-is-game-over').val();
+
+    while (gameIsOver == 0) {
+      startTheGame(e);
+      gameIsOver = $('.js-is-game-over').val();
+    }
+  };
+});
+
+/***/ }),
+
 /***/ "./resources/js/game/check-number-of-armies.js":
 /*!*****************************************************!*\
   !*** ./resources/js/game/check-number-of-armies.js ***!
@@ -19452,15 +19510,28 @@ $(document).ready(function () {
   window.runAttack = function (data, e) {
     e.preventDefault(); // $('.js-start-the-game-div').append('<button class="btn btn-info js-attack-next">Next attack</button>');
 
-    if (!data.data.game_over) {
-      if (data.data.success) {
-        $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + '</strong> army attacked <strong>' + data.data.attackedArmy.name + '</strong> and dealt <strong>' + data.data.damage + '</strong> damage, killing <strong>' + +data.data.lost_units + '</strong> units. Army <strong>' + data.data.attackedArmy.name + '</strong> has <strong>' + data.data.attackedArmy.units + '</strong> units remaining. </p>');
-        console.log(data);
-      } else {
-        $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + ' </strong>unsuccessfully attacked <strong>' + data.data.attackedArmy.name + '</strong>.</p>');
+    var gameOverSelector = $('.js-is-game-over');
+    var gameId = $('.js-game-id').val();
+
+    if (!data.data.game_over && gameOverSelector.val() != 1) {
+      if (data.data.attackingArmy.units > 0) {
+        if (data.data.success) {
+          if (data.data.attackedArmy.units <= 0) {
+            $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + '</strong> army attacked <strong>' + data.data.attackedArmy.name + '</strong> and dealt <strong>' + data.data.damage + '</strong> damage, killing <strong>' + +data.data.lost_units + '</strong> units. Army <strong>' + data.data.attackedArmy.name + '</strong> is defeated.</p>'); // console.log(data);
+            // deleteArmy(data.data.attackedArmy.id, e);
+          } else {
+            $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + '</strong> army attacked <strong>' + data.data.attackedArmy.name + '</strong> and dealt <strong>' + data.data.damage + '</strong> damage, killing <strong>' + +data.data.lost_units + '</strong> units. Army <strong>' + data.data.attackedArmy.name + '</strong> has <strong>' + data.data.attackedArmy.units + '</strong> units remaining. </p>'); // console.log(data);
+          }
+        } else {
+          $('.js-battle-log').append('<p class="lead"><strong>' + data.data.attackingArmy.name + ' </strong>unsuccessfully attacked <strong>' + data.data.attackedArmy.name + '</strong>.</p>');
+        }
       }
+
+      return 0;
     } else {
-      alert('Game is over. Army ' + data.data.victorious_army.name + ' is victorious!');
+      $('.js-is-game-active').val(0);
+      gameOverSelector.val(1);
+      return 1; // is the game over
     }
   };
 });
@@ -19477,34 +19548,79 @@ $(document).ready(function () {
 $(document).ready(function () {
   window.startTheGame = function (e) {
     e.preventDefault();
+    var gameId = $('.js-game-id').val();
     var currentNumberOfArmies = document.getElementById('js-number-of-game-armies').value;
     var gameIsActive = $('.js-is-game-active').val();
+    $('.js-battle-log').empty();
 
-    if (!gameIsActive) {
+    if (gameIsActive == 0) {
+      // game starting for the first time
       if (checkNumberOfGameArmies(currentNumberOfArmies, e)) {
-        console.log('startovala bitka');
-        var attackingArmyId = $('.js-next-army-to-attack-id').val();
-        $.ajax({
-          url: route('attack.start', attackingArmyId),
-          type: 'get',
-          success: function success(data) {
-            runAttack(data, e);
+        var armies = $('.js-all-game-armies').val();
+        location.reload();
+        jQuery.each(JSON.parse(armies), function (key, army) {
+          if (army.units > 0) {
+            updateGame(e);
+            $('.js-is-game-active').val(1);
+            console.log('battle started'); // setTimeout(function () {
+
+            $.ajax({
+              url: route('attack.start', army.id),
+              type: 'get',
+              success: function success(data) {
+                runAttack(data, e);
+              },
+              async: false
+            }); // }, 1);
           }
         });
       } else {
         alert('You need to have at least 5 armies to be able to start the game');
       }
     } else {
-      console.log('startovala bitka');
+      // game continues
+      console.log('battle continued');
 
-      var _attackingArmyId = $('.js-next-army-to-attack-id').val();
+      var _armies = $('.js-all-game-armies').val();
 
-      $.ajax({
-        url: route('attack.start', _attackingArmyId),
-        type: 'get',
-        success: function success(data) {
-          runAttack(data, e);
+      var gameOver = $('.js-is-game-over').val();
+      jQuery.each(JSON.parse(_armies), function (key, army) {
+        if (JSON.parse(_armies).length < 2) {
+          // console.log('sad je usao u manje od 2 armije');
+          $('.js-is-game-over').val(1);
+          location.reload();
+          alert('Battle is over, ' + army.name + ' wins.');
+          $.ajax({
+            url: route('game.update', gameId),
+            type: 'put',
+            data: {
+              active: 0
+            },
+            success: function success(data) {// console.log(data.success);
+            }
+          });
+          return 1;
         }
+
+        if (army.units > 0 && gameOver != 1) {
+          // setTimeout(function () {
+          $.ajax({
+            url: route('attack.start', army.id),
+            type: 'get',
+            success: function success(data) {
+              var isOver = runAttack(data, e);
+
+              if (typeof data.data.armies !== 'undefined') {
+                $('.js-all-game-armies').val(JSON.stringify(data.data.armies));
+              }
+
+              return isOver;
+            },
+            async: false
+          }); // }, 1);
+        }
+
+        return 0;
       });
     }
   };
@@ -19535,6 +19651,34 @@ $(document).ready(function () {
     } else {
       alert('You have reached the allowed maximum of active games. Please try again later.');
     }
+  };
+});
+
+/***/ }),
+
+/***/ "./resources/js/game/update.js":
+/*!*************************************!*\
+  !*** ./resources/js/game/update.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+$(document).ready(function () {
+  window.updateGame = function (e) {
+    e.preventDefault();
+    var activeStatus = 1;
+    var gameId = $('.js-game-id').val();
+    $.ajax({
+      url: route('game.update', gameId),
+      type: 'put',
+      data: {
+        active: activeStatus
+      } // ,
+      // success: function (data) {
+      //
+      // }
+
+    });
   };
 });
 

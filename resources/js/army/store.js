@@ -23,10 +23,23 @@ $(document).ready(function () {
                 },
                 success: function (data) {
 
+                    let currentGameArmies = JSON.parse($('.js-all-game-armies').val());
+
+                    if (data.army.game.active) {
+
+                        currentGameArmies.unshift(data.army);
+                    }
+
+                    else {
+
+                        currentGameArmies.push(data.army);
+                    }
+
+                    $('.js-all-game-armies').val(JSON.stringify(currentGameArmies));
+
                     $('.js-created-armies-div').append('<p><strong>Army name: </strong>' + data.army.name + '<strong> Units: </strong>' + data.army.units + '<strong> Strategy:</strong> attack ' + data.army.attack_strategy.name + '</p>');
 
                     let numberOfGameArmies = document.getElementById('js-number-of-game-armies').value ++;
-
                 }
 
             })

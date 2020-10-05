@@ -34,6 +34,18 @@ class ArmyController extends Controller
         return response()->json(['army' => $army]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function destroy(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->armyService->delete($request->armyId);
+
+        return response()->json(['success' => 'Army deleted']);
+    }
+
 //    /**
 //     * @param Request $request
 //     * @param int $armyId
